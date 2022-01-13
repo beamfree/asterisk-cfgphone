@@ -1,0 +1,23 @@
+#!version:{!version}
+
+### This file is the exported MAC-all.cfg.
+
+### For security, the following parameters with password haven't been display in this file.
+###account.1.password = 
+account.1.auth_name = {!number}
+account.1.codec.pcmu.priority = 1
+account.1.codec.pcma.priority = 2
+account.1.codec.g729.enable = 0
+account.1.codec.g729.priority = 0
+account.1.codec.g722.enable = 0
+account.1.codec.g722.priority = 0
+account.1.display_name = {!fullname}
+account.1.enable = 1
+account.1.label = {!fullname}
+account.1.sip_server.1.address = {!sipserver}
+account.1.user_name = {!number}
+local_time.dhcp_time = 1
+local_time.ntp_server1 = {!ntpserver}
+local_time.time_zone = +5
+local_time.time_zone_name = Ekaterinburg (RTZ 4)
+

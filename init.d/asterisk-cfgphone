@@ -1,0 +1,90 @@
+#!/bin/bash
+### BEGIN INIT INFO
+# Provides:          callwatch
+# Required-Start:    $all
+# Required-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:
+# Short-Description: your description here
+### END INIT INFO
+ 
+rootdir="/etc/bStudio/asterisk/cfgphone"
+server="$rootdir/index.js"
+logfile="/var/log/bStudio/asterisk/cfgphone/callwatch.log"
+ 
+user="root"
+nodejs=${NODEJS-/usr/bin/nodejs}
+
+script="$(basename $0)"
+lockfile="/var/lock/subsys/$script"
+ 
+. /lib/lsb/init-functions
+
+ulimit -n 12000
+RETVAL=0
+
+su "$user" -c "touch $logfile"
+
+do_start()
+{
+    if [ ! -f "$lockfile" ] ; then
+        date +"%Y-%m-%d %T Starting $server" >> $logfile
+        echo -n $"Starting $server: "
+        #runuser -l "$user" -c "nohup $nodejs $server >> $logfile &" && echo_success || echo_failure
+        runuser -l "$user" -c "NODE_ENV=production $nodejs $server 'production' >> $logfile &" && echo "success" || echo "failure"
+        RETVAL=$?
+        echo
+        [ $RETVAL -eq 0 ] && touch "$lockfile"
+    else
+        echo "$server is locked."
+        RETVAL=1
+    fi
+}
+ 
+do_stop()
+{
+    date +"%Y-%m-%d %T Stopping $server" >> $logfile
+    echo -n $"Stopping $server: "
+    pid=`ps -aefw | grep "$nodejs $server" | grep -v " grep " | awk '{print $2}'`
+    kill -9 $pid > /dev/null 2>&1 && echo_success || echo_failure
+    RETVAL=$?
+    echo
+    [ $RETVAL -eq 0 ] && rm -f "$lockfile"
+
+    if [ "$pid" = "" -a -f "$lockfile" ]; then
+        rm -f "$lockfile"
+        echo "Removed lockfile ( $lockfile )"
+    fi
+}
+ 
+do_status()
+{
+   pid=`ps -aefw | grep "$nodejs $server" | grep -v " grep " | awk '{print $2}'`
+   if [ "$pid" != "" ]; then
+     echo "$nodejs $server (pid $pid) is running..."
+   else
+     echo "$nodejs $server is stopped"
+   fi
+}
+
+case "$1" in
+    start)
+        do_start
+        ;;
+    stop)
+        do_stop
+        ;;
+    status)
+        do_status
+        ;;
+    restart)
+        do_stop
+        do_start
+        RETVAL=$?
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|status|restart}"
+        RETVAL=1
+esac
+ 
+exit $RETVAL

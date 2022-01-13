@@ -1,0 +1,5 @@
+module.exports = function(f,r) {
+    switch(f) {
+        default: return r;
+    }
+};

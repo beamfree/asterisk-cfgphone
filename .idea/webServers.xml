@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="d1206d2f-a104-4dfd-af09-5abe7dd0e62f" name="Asterisk">
+        <fileTransfer rootFolder="/etc/bStudio/cfgphone" accessType="SFTP" host="10.56.10.251" port="22" sshConfigId="2462b88f-da3d-4cfa-91d4-7e3e96dff694" sshConfig="administrator@10.56.10.251:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
